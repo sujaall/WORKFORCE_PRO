@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         String   @default("ADMIN") // ADMIN, SUPERVISOR
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Worker {
+  id               String   @id @default(cuid())
+  workerId         String   @unique @map("worker_id")
+  fullName         String   @map("full_name")
+  profilePhoto     String?  @map("profile_photo")
+  mobileNumber     String   @map("mobile_number")
+  alternateMobile  String?  @map("alternate_mobile")
+  dateOfBirth      DateTime? @map("date_of_birth")
+  gender           String?
+  address          String?
+  department       String
+  designation      String?
+  workerType       String   @default("Labourer") @map("worker_type")
+  joiningDate      DateTime @map("joining_date")
+  monthlySalary    Float    @map("monthly_salary")
+  employmentStatus String   @default("ACTIVE") @map("employment_status") // ACTIVE, INACTIVE
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  attendance    Attendance[]
+  leaves        Leave[]
+  salaryHistory SalaryHistory[]
+
+  @@map("workers")
+}
+
+model Attendance {
+  id             String   @id @default(cuid())
+  workerId       String   @map("worker_id")
+  date           DateTime
+  status         String   // PRESENT, ABSENT, LEAVE, HOLIDAY, HALF_DAY
+  checkInTime    String?  @map("check_in_time")
+  checkOutTime   String?  @map("check_out_time")
+  workingMinutes Int?     @map("working_minutes")
+  dailySalary    Float?   @map("daily_salary")
+  earnedSalary   Float?   @map("earned_salary")
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([workerId, date])
+  @@map("attendance")
+}
+
+model Leave {
+  id         String   @id @default(cuid())
+  workerId   String   @map("worker_id")
+  startDate  DateTime @map("start_date")
+  endDate    DateTime @map("end_date")
+  leaveType  String   @map("leave_type") // PERSONAL, SICK, EMERGENCY, OTHER
+  reason     String?
+  paidStatus String   @default("UNPAID") @map("paid_status") // PAID, UNPAID
+  status     String   @default("APPROVED") // PENDING, APPROVED, REJECTED
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@map("leaves")
+}
+
+model Holiday {
+  id          String   @id @default(cuid())
+  holidayName String   @map("holiday_name")
+  date        DateTime @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("holidays")
+}
+
+model SalaryHistory {
+  id               String   @id @default(cuid())
+  workerId         String   @map("worker_id")
+  month            Int
+  year             Int
+  monthlySalary    Float    @map("monthly_salary")
+  dailySalary      Float    @map("daily_salary")
+  presentDays      Int      @default(0) @map("present_days")
+  absentDays       Int      @default(0) @map("absent_days")
+  halfDays         Int      @default(0) @map("half_days")
+  leaveDays        Int      @default(0) @map("leave_days")
+  holidayDays      Int      @default(0) @map("holiday_days")
+  totalEarnedSalary Float   @map("total_earned_salary")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([workerId, month, year])
+  @@map("salary_history")
+}
+
+model CompanySettings {
+  id                 String   @id @default(cuid())
+  companyName        String   @default("Manufacturing Company") @map("company_name")
+  companyLogo        String?  @map("company_logo")
+  address            String?
+  salaryDivisor      Int      @default(30) @map("salary_divisor")
+  holidaySalaryPaid  Boolean  @default(false) @map("holiday_salary_paid")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("company_settings")
+}
