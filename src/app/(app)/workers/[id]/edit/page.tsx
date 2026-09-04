@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -30,9 +30,9 @@ export default function EditWorkerPage() {
 
   useEffect(() => {
     fetchWorker();
-  }, [params.id]);
+  }, [fetchWorker]);
 
-  const fetchWorker = async () => {
+  const fetchWorker = useCallback(async () => {
     try {
       const res = await fetch(`/api/workers/${params.id}`);
       const data = await res.json();
@@ -54,7 +54,7 @@ export default function EditWorkerPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
 
   const handleChange = (field: string, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -57,9 +57,9 @@ export default function WorkerProfilePage() {
 
   useEffect(() => {
     fetchWorker();
-  }, [params.id]);
+  }, [fetchWorker]);
 
-  const fetchWorker = async () => {
+  const fetchWorker = useCallback(async () => {
     try {
       const res = await fetch(`/api/workers/${params.id}`);
       const data = await res.json();
@@ -69,7 +69,7 @@ export default function WorkerProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
 
   if (loading) {
     return (

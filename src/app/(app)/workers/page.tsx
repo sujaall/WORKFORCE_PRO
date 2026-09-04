@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -74,9 +74,9 @@ export default function WorkersPage() {
 
   useEffect(() => {
     fetchWorkers();
-  }, [search, department, status]);
+  }, [fetchWorkers]);
 
-  const fetchWorkers = async () => {
+  const fetchWorkers = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -93,7 +93,7 @@ export default function WorkersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, department, status]);
 
   const handleDeactivate = async (id: string) => {
     try {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   format,
@@ -81,24 +81,24 @@ export default function CalendarPage() {
 
   useEffect(() => {
     fetchWorkers();
-  }, []);
+  }, [fetchWorkers]);
 
   useEffect(() => {
     if (selectedWorker) {
       fetchAttendance();
     }
-  }, [selectedWorker, currentMonth]);
+  }, [selectedWorker, currentMonth, fetchAttendance]);
 
-  const fetchWorkers = async () => {
+  const fetchWorkers = useCallback(async () => {
     const res = await fetch("/api/workers?status=ACTIVE&limit=500");
     const data = await res.json();
     setWorkers(data.workers || []);
     if (!selectedWorker && data.workers?.length > 0) {
       setSelectedWorker(data.workers[0].id);
     }
-  };
+  }, [selectedWorker]);
 
-  const fetchAttendance = async () => {
+  const fetchAttendance = useCallback(async () => {
     setLoading(true);
     try {
       const month = (currentMonth.getMonth() + 1).toString();
@@ -113,7 +113,7 @@ export default function CalendarPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedWorker, currentMonth]);
 
   const attendanceMap: Record<string, AttendanceRecord> = {};
   attendance.forEach((a) => {

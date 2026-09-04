@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, Loader2, PartyPopper, Trash2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,9 +32,9 @@ export default function HolidaysPage() {
 
   useEffect(() => {
     fetchHolidays();
-  }, []);
+  }, [fetchHolidays]);
 
-  const fetchHolidays = async () => {
+  const fetchHolidays = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/holidays");
@@ -45,7 +45,7 @@ export default function HolidaysPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleSubmit = async () => {
     setSaving(true);

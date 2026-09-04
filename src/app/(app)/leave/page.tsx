@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { format, differenceInDays } from "date-fns";
 import { Plus, Loader2, Sun, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,9 +55,9 @@ export default function LeavePage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [lRes, wRes] = await Promise.all([
@@ -73,7 +73,7 @@ export default function LeavePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleSubmit = async () => {
     setSaving(true);

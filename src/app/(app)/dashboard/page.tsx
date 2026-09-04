@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
@@ -73,9 +73,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [fetchDashboard]);
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
     try {
       const res = await fetch("/api/dashboard");
       const json = await res.json();
@@ -85,7 +85,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, IndianRupee, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,9 +45,9 @@ export default function SalaryPage() {
 
   useEffect(() => {
     fetchSalary();
-  }, [month, year, department]);
+  }, [fetchSalary]);
 
-  const fetchSalary = async () => {
+  const fetchSalary = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -65,7 +65,7 @@ export default function SalaryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [month, year, department]);
 
   const generateSalary = async () => {
     setGenerating(true);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, BarChart3, Download, FileText, Table2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +41,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -58,11 +58,11 @@ export default function ReportsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [month, year, department]);
 
   useEffect(() => {
     fetchReport();
-  }, [month, year, department]);
+  }, [fetchReport]);
 
   const exportCSV = () => {
     try {

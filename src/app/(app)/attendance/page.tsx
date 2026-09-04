@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import {
   Save,
@@ -57,9 +57,9 @@ export default function AttendancePage() {
 
   useEffect(() => {
     fetchAttendance();
-  }, [date]);
+  }, [fetchAttendance]);
 
-  const fetchAttendance = async () => {
+  const fetchAttendance = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/attendance?date=${date}`);
@@ -83,7 +83,7 @@ export default function AttendancePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [date]);
 
   const updateRecord = (workerId: string, field: string, value: string) => {
     setLocalRecords((prev) => ({
@@ -287,9 +287,8 @@ export default function AttendancePage() {
             return (
               <Card
                 key={worker.id}
-                className={`transition-all duration-200 ${
-                  record.changed ? "border-indigo-200 shadow-sm" : ""
-                }`}
+                className={`transition-all duration-200 ${record.changed ? "border-indigo-200 shadow-sm" : ""
+                  }`}
               >
                 <div className="p-4">
                   {/* Worker info + Status buttons */}
@@ -313,41 +312,37 @@ export default function AttendancePage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <button
                         onClick={() => setStatus(worker.id, "PRESENT")}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          record.status === "PRESENT"
-                            ? "bg-emerald-500 text-white shadow-sm"
-                            : "bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700"
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${record.status === "PRESENT"
+                          ? "bg-emerald-500 text-white shadow-sm"
+                          : "bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700"
+                          }`}
                       >
                         ✓ Present
                       </button>
                       <button
                         onClick={() => setStatus(worker.id, "ABSENT")}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          record.status === "ABSENT"
-                            ? "bg-red-500 text-white shadow-sm"
-                            : "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-700"
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${record.status === "ABSENT"
+                          ? "bg-red-500 text-white shadow-sm"
+                          : "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-700"
+                          }`}
                       >
                         ✗ Absent
                       </button>
                       <button
                         onClick={() => setStatus(worker.id, "HALF_DAY")}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          record.status === "HALF_DAY"
-                            ? "bg-blue-500 text-white shadow-sm"
-                            : "bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700"
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${record.status === "HALF_DAY"
+                          ? "bg-blue-500 text-white shadow-sm"
+                          : "bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700"
+                          }`}
                       >
                         ½ Half Day
                       </button>
                       <button
                         onClick={() => setStatus(worker.id, "LEAVE")}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          record.status === "LEAVE"
-                            ? "bg-amber-500 text-white shadow-sm"
-                            : "bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700"
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${record.status === "LEAVE"
+                          ? "bg-amber-500 text-white shadow-sm"
+                          : "bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700"
+                          }`}
                       >
                         ☀ Leave
                       </button>

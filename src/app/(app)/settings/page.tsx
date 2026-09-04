@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, Save, Settings as SettingsIcon, Building2, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,9 +26,9 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const res = await fetch("/api/settings");
       const data = await res.json();
@@ -38,7 +38,7 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleSave = async () => {
     if (!settings) return;
