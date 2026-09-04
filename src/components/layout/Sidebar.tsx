@@ -20,6 +20,8 @@ import {
   Factory,
   Menu,
   X,
+  Receipt,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +29,8 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/workers", label: "Workers", icon: Users },
   { href: "/attendance", label: "Attendance", icon: CalendarCheck },
+  { href: "/expenses", label: "Expenses", icon: Receipt },
+  { href: "/finance", label: "Finance", icon: Wallet },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/salary", label: "Salary", icon: IndianRupee },
   { href: "/leave", label: "Leave", icon: Sun },

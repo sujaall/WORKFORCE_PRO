@@ -41,6 +41,9 @@ model Worker {
   attendance    Attendance[]
   leaves        Leave[]
   salaryHistory SalaryHistory[]
+  expenses      WorkerExpense[]
+  financial     WorkerFinancial?
+  payouts       PayoutRecord[]
 
   @@map("workers")
 }
@@ -124,4 +127,48 @@ model CompanySettings {
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("company_settings")
+}
+
+model WorkerExpense {
+  id         String   @id @default(cuid())
+  workerId   String   @map("worker_id")
+  amount     Float
+  date       DateTime
+  weekNumber Int      @map("week_number")
+  month      Int
+  year       Int
+  note       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@map("worker_expenses")
+}
+
+model WorkerFinancial {
+  id             String   @id @default(cuid())
+  workerId       String   @unique @map("worker_id")
+  pendingBalance Float    @default(0) @map("pending_balance")
+  advance        Float    @default(0)
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@map("worker_financials")
+}
+
+model PayoutRecord {
+  id        String   @id @default(cuid())
+  workerId  String   @map("worker_id")
+  amount    Float
+  date      DateTime
+  type      String
+  month     Int?
+  year      Int?
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  worker Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@map("payout_records")
 }

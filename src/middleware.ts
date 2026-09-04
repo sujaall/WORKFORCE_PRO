@@ -17,5 +17,8 @@ export const config = {
     "/holidays/:path*",
     "/reports/:path*",
     "/settings/:path*",
+    "/expenses/:path*",
+    "/finance/:path*",
   ],
 };
+

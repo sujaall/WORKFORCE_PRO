@@ -23,7 +23,7 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   // Check if current path matches any of the "more" pages
-  const morePages = ["/calendar", "/leave", "/holidays", "/reports", "/settings"];
+  const morePages = ["/calendar", "/leave", "/holidays", "/reports", "/settings", "/expenses", "/finance"];
   const isMoreActive = morePages.some(
     (p) => pathname === p || pathname?.startsWith(p + "/")
   );
