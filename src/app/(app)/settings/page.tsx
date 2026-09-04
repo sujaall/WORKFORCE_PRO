@@ -24,10 +24,6 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
-
   const fetchSettings = useCallback(async () => {
     try {
       const res = await fetch("/api/settings");
@@ -39,6 +35,10 @@ export default function SettingsPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const handleSave = async () => {
     if (!settings) return;

@@ -55,10 +55,6 @@ export default function WorkerProfilePage() {
   const [worker, setWorker] = useState<WorkerProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchWorker();
-  }, [fetchWorker]);
-
   const fetchWorker = useCallback(async () => {
     try {
       const res = await fetch(`/api/workers/${params.id}`);
@@ -70,6 +66,10 @@ export default function WorkerProfilePage() {
       setLoading(false);
     }
   }, [params.id]);
+
+  useEffect(() => {
+    fetchWorker();
+  }, [fetchWorker]);
 
   if (loading) {
     return (

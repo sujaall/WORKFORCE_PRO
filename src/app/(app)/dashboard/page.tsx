@@ -71,10 +71,6 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboard();
-  }, [fetchDashboard]);
-
   const fetchDashboard = useCallback(async () => {
     try {
       const res = await fetch("/api/dashboard");
@@ -86,6 +82,10 @@ export default function DashboardPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
 
   if (loading) {
     return (

@@ -30,10 +30,6 @@ export default function HolidaysPage() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ holidayName: "", date: "", description: "" });
 
-  useEffect(() => {
-    fetchHolidays();
-  }, [fetchHolidays]);
-
   const fetchHolidays = useCallback(async () => {
     setLoading(true);
     try {
@@ -46,6 +42,10 @@ export default function HolidaysPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchHolidays();
+  }, [fetchHolidays]);
 
   const handleSubmit = async () => {
     setSaving(true);

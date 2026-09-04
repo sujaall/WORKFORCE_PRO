@@ -79,16 +79,6 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<AttendanceRecord | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    fetchWorkers();
-  }, [fetchWorkers]);
-
-  useEffect(() => {
-    if (selectedWorker) {
-      fetchAttendance();
-    }
-  }, [selectedWorker, currentMonth, fetchAttendance]);
-
   const fetchWorkers = useCallback(async () => {
     const res = await fetch("/api/workers?status=ACTIVE&limit=500");
     const data = await res.json();
@@ -114,6 +104,16 @@ export default function CalendarPage() {
       setLoading(false);
     }
   }, [selectedWorker, currentMonth]);
+
+  useEffect(() => {
+    fetchWorkers();
+  }, [fetchWorkers]);
+
+  useEffect(() => {
+    if (selectedWorker) {
+      fetchAttendance();
+    }
+  }, [selectedWorker, currentMonth, fetchAttendance]);
 
   const attendanceMap: Record<string, AttendanceRecord> = {};
   attendance.forEach((a) => {

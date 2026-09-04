@@ -28,10 +28,6 @@ export default function EditWorkerPage() {
     workerType: "Labourer", joiningDate: "", monthlySalary: 0,
   });
 
-  useEffect(() => {
-    fetchWorker();
-  }, [fetchWorker]);
-
   const fetchWorker = useCallback(async () => {
     try {
       const res = await fetch(`/api/workers/${params.id}`);
@@ -55,6 +51,10 @@ export default function EditWorkerPage() {
       setLoading(false);
     }
   }, [params.id]);
+
+  useEffect(() => {
+    fetchWorker();
+  }, [fetchWorker]);
 
   const handleChange = (field: string, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));

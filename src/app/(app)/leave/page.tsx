@@ -53,10 +53,6 @@ export default function LeavePage() {
     reason: "",
   });
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
@@ -74,6 +70,10 @@ export default function LeavePage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSubmit = async () => {
     setSaving(true);

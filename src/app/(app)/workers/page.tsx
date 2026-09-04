@@ -72,10 +72,6 @@ export default function WorkersPage() {
   const [status, setStatus] = useState("ACTIVE");
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    fetchWorkers();
-  }, [fetchWorkers]);
-
   const fetchWorkers = useCallback(async () => {
     setLoading(true);
     try {
@@ -94,6 +90,10 @@ export default function WorkersPage() {
       setLoading(false);
     }
   }, [search, department, status]);
+
+  useEffect(() => {
+    fetchWorkers();
+  }, [fetchWorkers]);
 
   const handleDeactivate = async (id: string) => {
     try {

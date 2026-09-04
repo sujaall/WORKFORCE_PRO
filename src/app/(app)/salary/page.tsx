@@ -43,10 +43,6 @@ export default function SalaryPage() {
   const [generating, setGenerating] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState<SalaryWorker | null>(null);
 
-  useEffect(() => {
-    fetchSalary();
-  }, [fetchSalary]);
-
   const fetchSalary = useCallback(async () => {
     setLoading(true);
     try {
@@ -66,6 +62,10 @@ export default function SalaryPage() {
       setLoading(false);
     }
   }, [month, year, department]);
+
+  useEffect(() => {
+    fetchSalary();
+  }, [fetchSalary]);
 
   const generateSalary = async () => {
     setGenerating(true);

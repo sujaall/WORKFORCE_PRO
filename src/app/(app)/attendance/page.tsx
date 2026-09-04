@@ -55,10 +55,6 @@ export default function AttendancePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchAttendance();
-  }, [fetchAttendance]);
-
   const fetchAttendance = useCallback(async () => {
     setLoading(true);
     try {
@@ -84,6 +80,10 @@ export default function AttendancePage() {
       setLoading(false);
     }
   }, [date]);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const updateRecord = (workerId: string, field: string, value: string) => {
     setLocalRecords((prev) => ({
