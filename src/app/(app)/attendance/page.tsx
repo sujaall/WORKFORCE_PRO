@@ -394,20 +394,6 @@ export default function AttendancePage() {
         </div>
       )}
 
-      {/* Floating save button on mobile */}
-      {workers.length > 0 && (
-        <div className="fixed bottom-6 right-6 lg:hidden z-30">
-          <Button
-            onClick={handleSave}
-            disabled={saving}
-            size="xl"
-            className="rounded-full shadow-lg gap-2"
-          >
-            {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-            Save
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

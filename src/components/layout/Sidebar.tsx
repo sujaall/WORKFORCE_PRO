@@ -149,6 +149,15 @@ export function Sidebar() {
             {!collapsed && <span>Sign Out</span>}
           </button>
         </div>
+
+        {/* Footer credit */}
+        {!collapsed && (
+          <div className="pb-3 px-3">
+            <p className="text-xs text-muted-foreground text-center opacity-60 select-none">
+              Built by Sujal
+            </p>
+          </div>
+        )}
       </aside>
     </>
   );

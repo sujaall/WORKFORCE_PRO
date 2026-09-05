@@ -127,6 +127,13 @@ export default function LoginPage() {
             Demo: admin@company.com / admin123
           </p>
         </div>
+
+        {/* Built by credit */}
+        <div className="mt-6">
+          <p className="text-xs text-muted-foreground text-center opacity-60 select-none">
+            Built by Sujal
+          </p>
+        </div>
       </div>
     </div>
   );

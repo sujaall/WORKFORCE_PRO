@@ -211,7 +211,7 @@ export default function ExpensesPage() {
       {/* Floating Action Button */}
       <button
         onClick={handleFabClick}
-        className="fixed bottom-24 right-5 lg:bottom-8 lg:right-8 z-30 w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-xl flex items-center justify-center transition-all active:scale-[0.92] hover:shadow-2xl"
+        className="fixed bottom-20 right-4 lg:bottom-8 lg:right-8 z-40 w-14 h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-xl flex items-center justify-center transition-all active:scale-[0.92] hover:shadow-2xl"
       >
         <Plus className="w-7 h-7" />
       </button>

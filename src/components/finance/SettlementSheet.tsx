@@ -45,6 +45,7 @@ export function SettlementSheet({
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const grossEarned = worker.salary?.totalEarnedSalary || 0;
   const expenses = worker.totalExpenses;
@@ -54,6 +55,7 @@ export function SettlementSheet({
 
   const handleAction = async (action: string) => {
     setProcessing(true);
+    setErrorMessage("");
     try {
       const res = await fetch("/api/settlements", {
         method: "POST",
@@ -72,10 +74,14 @@ export function SettlementSheet({
         setSuccessMessage(data.message || "Settlement completed");
         onSuccess();
       } else {
-        toast.error(data.error || "Settlement failed");
+        const msg = data.error || "Settlement failed";
+        setErrorMessage(msg);
+        toast.error(msg);
       }
-    } catch {
-      toast.error("Failed to process settlement");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to process settlement";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setProcessing(false);
     }
@@ -89,6 +95,7 @@ export function SettlementSheet({
   const handleClose = () => {
     setSuccess(false);
     setSuccessMessage("");
+    setErrorMessage("");
     onClose();
   };
 
@@ -149,6 +156,14 @@ export function SettlementSheet({
             </div>
           ) : (
             <>
+              {/* Error Banner */}
+              {errorMessage && (
+                <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-200">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-800 font-medium">{errorMessage}</p>
+                </div>
+              )}
+
               {/* Breakdown */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between py-3 border-b border-gray-100">

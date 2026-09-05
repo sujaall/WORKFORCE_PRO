@@ -30,21 +30,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get salary record
+    // Get salary record — fall back to computing from attendance if missing
     const salaryRecord = await prisma.salaryHistory.findUnique({
       where: {
         workerId_month_year: { workerId, month, year },
       },
     });
 
-    if (!salaryRecord) {
-      return NextResponse.json(
-        { error: "No salary record" },
-        { status: 400 }
-      );
-    }
+    let totalEarnedSalary = 0;
 
-    const totalEarnedSalary = salaryRecord.totalEarnedSalary;
+    if (salaryRecord) {
+      totalEarnedSalary = salaryRecord.totalEarnedSalary;
+    } else {
+      // Compute earned salary on the fly from attendance records
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0); // last day of month
+
+      const attendanceRecords = await prisma.attendance.findMany({
+        where: {
+          workerId,
+          date: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      totalEarnedSalary = attendanceRecords.reduce((sum, a) => {
+        return sum + (a.earnedSalary ?? 0);
+      }, 0);
+    }
 
     // Sum all expenses for that worker+month+year
     const expensesAgg = await prisma.workerExpense.aggregate({
@@ -53,11 +68,13 @@ export async function POST(request: Request) {
     });
     const totalExpenses = expensesAgg._sum.amount || 0;
 
-    // Get current financial record
-    const financial = await prisma.workerFinancial.findUnique({
+    // Get or create financial record (upsert to ensure it exists)
+    const financial = await prisma.workerFinancial.upsert({
       where: { workerId },
+      create: { workerId, pendingBalance: 0, advance: 0 },
+      update: {},
     });
-    const currentAdvance = financial?.advance || 0;
+    const currentAdvance = financial.advance || 0;
 
     const netPayable = Math.round(totalEarnedSalary - totalExpenses - currentAdvance);
 
