@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workforce-pro-v1';
+const CACHE_NAME = 'workforce-pro-v2';
 
 // Assets to cache for offline shell
 const PRECACHE_ASSETS = [
