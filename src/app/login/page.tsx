@@ -1,20 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Factory, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Handle NextAuth error redirects (e.g. /login?error=Configuration)
+  useEffect(() => {
+    const authError = searchParams.get("error");
+    if (authError) {
+      if (authError === "Configuration") {
+        setError("Server configuration error. Please try again.");
+      } else if (authError === "CredentialsSignin") {
+        setError("Invalid email or password");
+      } else {
+        setError("An authentication error occurred. Please try again.");
+      }
+      // Clean the URL so the error doesn't persist on refresh
+      window.history.replaceState({}, "", "/login");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +46,11 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        if (result.error.includes("Server error")) {
+          setError("Server error - please try again later");
+        } else {
+          setError("Invalid email or password");
+        }
       } else {
         router.push("/dashboard");
         router.refresh();
@@ -136,5 +157,31 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback for Suspense
+function LoginLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4">
+      <div className="w-full max-w-md text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-900 rounded-2xl shadow-lg mb-4">
+          <Factory className="w-8 h-8 text-white" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900">WorkForce Pro</h1>
+        <div className="mt-8">
+          <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Wrap with Suspense — required because useSearchParams() needs it in Next.js 14
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginForm />
+    </Suspense>
   );
 }
